@@ -102,6 +102,41 @@ sync_files() {
     return 0
 }
 
+sync_plugins() {
+    # Bail early if sync isn't configured
+    if [ -z "${SYNC_PLUGIN_LOCATION}" ] || [ "${SYNC_PLUGIN_LOCATION}" == "" ]; then
+        return 0
+    fi
+
+    local src_dir="${SYNC_PLUGIN_LOCATION}"
+    local dest_dir="/home/container/game/csgo/addons/counterstrikesharp/"
+
+    # Make sure the source directory actually exists
+    if [ ! -d "$src_dir" ]; then
+        log_message "Sync location not found: $src_dir" "error"
+        log_message "SYNC_PLUGIN_LOCATION directory not found: $src_dir" "error"
+        log_message "Make sure SYNC_PLUGIN_LOCATION matches the path where your files are actually mounted to (TARGET)." "error"
+        exit 1
+    fi
+
+    log_message "Syncing PLUGINS files..." "info"
+
+    # Sync everything EXCEPT .vpk files, configs, and gameinfo.gi
+    # We'll symlink VPKs separately to save space
+    # gameinfo.gi is excluded to preserve addon configurations
+    if rsync -aKLz --exclude 'source/' --exclude 'logs/' --exclude 'lang/' --exclude 'dotnet/' --exclude 'bin/' --exclude 'api/' "$src_dir/" "$dest_dir" 2>/dev/null; then
+        : # base files synced silently
+    else
+        log_message "Failed to sync plugins files" "error"
+        return 1
+    fi
+
+    log_message "Plugins synchronized" "info"
+
+    return 0
+}
+
+
 sync_cfg_files() {
     # Skip if sync isn't set up
     if [ -z "${SYNC_LOCATION}" ] || [ "${SYNC_LOCATION}" == "" ]; then
