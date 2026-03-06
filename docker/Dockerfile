@@ -1,9 +1,9 @@
 # Dockerfile with SteamRT3
 FROM        registry.gitlab.steamos.cloud/steamrt/sniper/platform:latest-container-runtime-depot
-LABEL       author="K4ryuu @ KitsuneLab" \
-            maintainer="k4ryuu@icloud.com" \
+LABEL       author="iks__" \
+            maintainer="pocetikyt@gmail.com" \
             org.opencontainers.image.description="The SteamRT3 Platform image for Pterodactyl CS2 servers is packed with numerous features, designed to simplify server management and reduce hassle." \
-            org.opencontainers.image.source="https://github.com/K4ryuu/CS2-Egg"
+            org.opencontainers.image.source="https://github.com/Iksix/CS2-Egg"
 
 # Prep OS
 RUN         mkdir -p /etc/sudoers.d && \

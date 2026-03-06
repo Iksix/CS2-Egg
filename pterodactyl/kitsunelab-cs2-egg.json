@@ -2,7 +2,7 @@
   "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
   "meta": {
     "version": "PTDL_v2",
-    "update_url": "https://raw.githubusercontent.com/K4ryuu/CS2-Egg/main/pterodactyl/kitsunelab-cs2-egg.json"
+    "update_url": "https://raw.githubusercontent.com/Iksix/CS2-Egg/main/pterodactyl/kitsunelab-cs2-egg.json"
   },
   "exported_at": "2026-02-7T15:31:48+02:00",
   "name": "KitsuneLab CS2 Egg @ K4ryuu",
@@ -13,7 +13,8 @@
     "KitsuneLab CS2 - GitHub - Unlimited": "ghcr.io/k4ryuu/cs2-egg:latest",
     "KitsuneLab CS2 Beta - GitHub - Unlimited": "ghcr.io/k4ryuu/cs2-egg:beta",
     "KitsuneLab CS2 - DockerHub - Limited": "docker.io/sples1/k4ryuu-cs2:latest",
-    "KitsuneLab CS2 Beta - DockerHub - Limited": "docker.io/sples1/k4ryuu-cs2:beta"
+    "KitsuneLab CS2 Beta - DockerHub - Limited": "docker.io/sples1/k4ryuu-cs2:beta",
+    "iks__ CS2 - DockerHub": "docker.io/iksix/cs2-egg:beta"
   },
   "file_denylist": [],
   "startup": "./game/cs2.sh {{CUSTOM_PARAMS}} -dedicated +ip 0.0.0.0 -port {{SERVER_PORT}} +map {{SRCDS_MAP}} -maxplayers {{SRCDS_MAXPLAYERS}} +sv_setsteamaccount {{STEAM_ACC}} +game_type {{GAME_TYPE}} +game_mode {{GAME_MODE}}",
