@@ -136,6 +136,42 @@ sync_plugins() {
     return 0
 }
 
+sync_modes() {
+    # Bail early if sync isn't configured
+    if [ -z "${MODE_SYNC_LOCATION}" ] || [ -z "${MODE_SYNC}" ]; then
+        return 0
+    fi
+
+    local dest_dir="/home/container/game/csgo/"
+
+    IFS=',' read -ra MODES <<< "$MODE_SYNC"
+
+    for mode in "${MODES[@]}"; do
+        local src_dir="${MODE_SYNC_LOCATION}/${mode}"
+
+        if [ ! -d "$src_dir" ]; then
+            log_message "Mode sync location not found: $src_dir" "error"
+            continue
+        fi
+
+        log_message "Syncing MODE ${mode} plugins..." "info"
+
+        if rsync -aKLz \
+            --include 'addons/***' \
+            --include 'cfg/***' \
+            --exclude '*' \
+            "$src_dir/" "$dest_dir" 2>/dev/null; then
+            :
+        else
+            log_message "Failed to sync mode ${mode}" "error"
+        fi
+    done
+
+    log_message "Modes synchronized" "info"
+
+    return 0
+}
+
 
 sync_cfg_files() {
     # Skip if sync isn't set up

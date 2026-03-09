@@ -36,6 +36,7 @@ if [ ${SRCDS_STOP_UPDATE:-0} -eq 0 ]; then
     # VPK Sync (if configured) - must happen before SteamCMD
     sync_files
     sync_plugins
+    sync_modes
     sync_cfg_files
 
     # Initial setup and sync
