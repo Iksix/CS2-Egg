@@ -102,74 +102,112 @@ sync_files() {
     return 0
 }
 
-sync_plugins() {
-    # Bail early if sync isn't configured
-    if [ -z "${SYNC_PLUGIN_LOCATION}" ] || [ "${SYNC_PLUGIN_LOCATION}" == "" ]; then
+# sync_plugins() {
+#     # Bail early if sync isn't configured
+#     if [ -z "${SYNC_PLUGIN_LOCATION}" ] || [ "${SYNC_PLUGIN_LOCATION}" == "" ]; then
+#         return 0
+#     fi
+
+#     local src_dir="${SYNC_PLUGIN_LOCATION}"
+#     local dest_dir="/home/container/game/csgo/addons/counterstrikesharp/"
+
+#     # Make sure the source directory actually exists
+#     if [ ! -d "$src_dir" ]; then
+#         log_message "Sync location not found: $src_dir" "error"
+#         log_message "SYNC_PLUGIN_LOCATION directory not found: $src_dir" "error"
+#         log_message "Make sure SYNC_PLUGIN_LOCATION matches the path where your files are actually mounted to (TARGET)." "error"
+#         exit 1
+#     fi
+
+#     log_message "Syncing PLUGINS files..." "info"
+
+#     # Sync everything EXCEPT .vpk files, configs, and gameinfo.gi
+#     # We'll symlink VPKs separately to save space
+#     # gameinfo.gi is excluded to preserve addon configurations
+#     if rsync -aKLz --exclude 'source/' --exclude 'logs/' --exclude 'lang/' --exclude 'dotnet/' --exclude 'bin/' --exclude 'api/' "$src_dir/" "$dest_dir" 2>/dev/null; then
+#         : # base files synced silently
+#     else
+#         log_message "Failed to sync plugins files" "error"
+#         return 1
+#     fi
+
+#     log_message "Plugins synchronized" "info"
+
+#     return 0
+# }
+
+# sync_modes() {
+#     # Bail early if sync isn't configured
+#     if [ -z "${MODE_SYNC_LOCATION}" ] || [ -z "${MODE_SYNC}" ]; then
+#         return 0
+#     fi
+
+#     local dest_dir="/home/container/game/csgo/"
+
+#     IFS=',' read -ra MODES <<< "$MODE_SYNC"
+
+#     for mode in "${MODES[@]}"; do
+#         local src_dir="${MODE_SYNC_LOCATION}/${mode}"
+
+#         if [ ! -d "$src_dir" ]; then
+#             log_message "Mode sync location not found: $src_dir" "error"
+#             continue
+#         fi
+
+#         log_message "Syncing MODE ${mode} plugins..." "info"
+
+#         if rsync -aKLz \
+#             --include 'addons/***' \
+#             --include 'cfg/***' \
+#             --exclude '*' \
+#             "$src_dir/" "$dest_dir" 2>/dev/null; then
+#             :
+#         else
+#             log_message "Failed to sync mode ${mode}" "error"
+#         fi
+#     done
+
+#     log_message "Modes synchronized" "info"
+
+#     return 0
+# }
+
+sync_git_modes() {
+
+    if [ -z "${MODE_SYNC}" ] || [ -z "${BASE_REPO}" ]; then
         return 0
     fi
 
-    local src_dir="${SYNC_PLUGIN_LOCATION}"
+    local repo_dir="${REPO_DIR}"
     local dest_dir="/home/container/game/csgo/addons/counterstrikesharp/"
 
-    # Make sure the source directory actually exists
-    if [ ! -d "$src_dir" ]; then
-        log_message "Sync location not found: $src_dir" "error"
-        log_message "SYNC_PLUGIN_LOCATION directory not found: $src_dir" "error"
-        log_message "Make sure SYNC_PLUGIN_LOCATION matches the path where your files are actually mounted to (TARGET)." "error"
-        exit 1
-    fi
-
-    log_message "Syncing PLUGINS files..." "info"
-
-    # Sync everything EXCEPT .vpk files, configs, and gameinfo.gi
-    # We'll symlink VPKs separately to save space
-    # gameinfo.gi is excluded to preserve addon configurations
-    if rsync -aKLz --exclude 'source/' --exclude 'logs/' --exclude 'lang/' --exclude 'dotnet/' --exclude 'bin/' --exclude 'api/' "$src_dir/" "$dest_dir" 2>/dev/null; then
-        : # base files synced silently
+    # если репозиторий ещё не скачан
+    if [ ! -d "$repo_dir/.git" ]; then
+        log_message "Cloning repository ${BASE_REPO}" "info"
+        git clone --depth 1 "https://${GITHUB_TOKEN}@github.com/${BASE_REPO}.git" "$repo_dir"
     else
-        log_message "Failed to sync plugins files" "error"
-        return 1
+        log_message "Updating repository" "info"
+        git -C "$repo_dir" pull
     fi
-
-    log_message "Plugins synchronized" "info"
-
-    return 0
-}
-
-sync_modes() {
-    # Bail early if sync isn't configured
-    if [ -z "${MODE_SYNC_LOCATION}" ] || [ -z "${MODE_SYNC}" ]; then
-        return 0
-    fi
-
-    local dest_dir="/home/container/game/csgo/"
 
     IFS=',' read -ra MODES <<< "$MODE_SYNC"
 
     for mode in "${MODES[@]}"; do
-        local src_dir="${MODE_SYNC_LOCATION}/${mode}"
+
+        local src_dir="${repo_dir}/${mode}"
 
         if [ ! -d "$src_dir" ]; then
-            log_message "Mode sync location not found: $src_dir" "error"
+            log_message "Mode folder not found: ${mode}" "error"
             continue
         fi
 
-        log_message "Syncing MODE ${mode} plugins..." "info"
+        log_message "Syncing mode ${mode}" "info"
 
-        if rsync -aKLz \
-            --include 'addons/***' \
-            --include 'cfg/***' \
-            --exclude '*' \
-            "$src_dir/" "$dest_dir" 2>/dev/null; then
-            :
-        else
-            log_message "Failed to sync mode ${mode}" "error"
-        fi
+        rsync -a "$src_dir/" "$dest_dir"
+
     done
 
     log_message "Modes synchronized" "info"
-
-    return 0
 }
 
 

@@ -21,6 +21,8 @@ APP_ID="730"
 # This must match the path you configured in Pterodactyl mounts
 CS2_DIR="/srv/cs2-shared"
 
+REPO_DIR="/srv/cs2-shared/repos"
+
 # Required: SteamCMD installation directory
 STEAMCMD_DIR="/root/steamcmd"
 
@@ -429,6 +431,7 @@ update_cs2() {
 
     local version_before=$(get_local_version)
     mkdir -p "$CS2_DIR"
+    mkdir -p "$REPO_DIR"
 
     # Build validate flag based on configuration
     local validate_flag=""

@@ -223,19 +223,29 @@
       "field_type": "text"
     },
     {
-      "name": "PLUGINS Sync",
-      "description": "ХуйПиздаХуйПизда",
-      "env_variable": "SYNC_PLUGIN_LOCATION",
+      "name": "BASE REPO",
+      "description": "Репозиторий синхронизации режимов, например: Iksix/cs2servers",
+      "env_variable": "BASE_REPO",
       "default_value": "",
-      "user_viewable": false,
-      "user_editable": false,
+      "user_viewable": true,
+      "user_editable": true,
       "rules": "nullable|string",
       "field_type": "text"
     },
     {
-      "name": "Modes Sync location",
-      "description": "Базовая директория для синхронизации режимов",
-      "env_variable": "MODE_SYNC_LOCATION",
+      "name": "Github token",
+      "description": "Токен для доступа к базовому репозиторию",
+      "env_variable": "GITHUB_TOKEN",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string",
+      "field_type": "text"
+    },
+    {
+      "name": "REPO DIR",
+      "description": "Где будет храниться репозиторий на сервере",
+      "env_variable": "REPO_DIR",
       "default_value": "",
       "user_viewable": true,
       "user_editable": true,
